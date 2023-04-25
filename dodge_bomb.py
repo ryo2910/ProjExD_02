@@ -10,10 +10,6 @@ delta = {
     pg.K_RIGHT: (1, 0)
     }
 
-
-
-
-
 def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
     オブジェクトが画面内or画面外を判定し、真理値タプル(Trueなど)を返す
@@ -35,10 +31,10 @@ def main():
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
-    kk_rct = kk_img.get_rect()  #練習問題4
+    kk_rct = kk_img.get_rect()  # 練習問題4
     kk_rct.center = 900, 400
     bb_img = pg.Surface((20, 20))
-    pg.draw.circle(bb_img,(255, 0, 0), (10, 10), 10)  #爆弾の初期
+    pg.draw.circle(bb_img,(255, 0, 0), (10, 10), 10)  # 爆弾の初期
     bb_img.set_colorkey((0, 0, 0))
     x, y = random.randint(0, 1600), random.randint(0, 900)
     #screen.blit(bb_img, [x, y]) 練習問題2
@@ -46,7 +42,7 @@ def main():
     bb_rct = bb_img.get_rect()
     bb_rct.center = x, y
     tmr = 0
-    kk_img_f = pg.transform.flip(kk_img, True, False)  #こうかとん反転
+    kk_img_f = pg.transform.flip(kk_img, True, False)  # こうかとん反転
     kk_muki = {
         (0, -1): pg.transform.rotozoom(kk_img_f, 90, 1.0),
         (1, -1): pg.transform.rotozoom(kk_img_f, 45, 1.0),
@@ -59,7 +55,7 @@ def main():
         (0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
     }
 
-    accs = [a for a in range(1, 11)] #演習2
+    accs = [a for a in range(1, 11)] # 演習2
     
 
     while True:
@@ -69,7 +65,7 @@ def main():
 
         tmr += 1
         kk_lst = []
-        t_x = 0  #リストからとったタプル
+        t_x = 0  # リストからとったタプル
         t_y = 0
 
         avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
@@ -79,37 +75,33 @@ def main():
         for k, mv in delta.items():
             if key_lst[k]:
                 kk_rct.move_ip(mv)
-                kk_lst.append(mv)  #空のリストにmvをいれる
+                kk_lst.append(mv)  # 空のリストにmvをいれる
         if check_bound(screen.get_rect(), kk_rct) != (True, True):
             for k, mv in delta.items():
                 if key_lst[k]:
                    kk_rct.move_ip(-mv[0], -mv[1])
 
-        for t in kk_lst:  #追加1
+        for t in kk_lst:  # 追加1
             t_x += t[0]
             t_y += t[1]
 
         kk_img = kk_muki[(t_x, t_y)]
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, kk_rct)  #こうかとん移動
-        bb_rct.move_ip(avx, avy)
+        screen.blit(kk_img, kk_rct)  # こうかとん移動
+        bb_rct.move_ip(avx, avy)  # 爆弾移動
         yoko, tate = check_bound(screen.get_rect(), bb_rct)
-        if not yoko:  #横方向にはみ出していたら
+        if not yoko:  # 横方向にはみ出していたら
             vx *= -1
-        if not tate:  #縦方向にはみ出していたら
+        if not tate:  # 縦方向にはみ出していたら
             vy *= -1
 
-        bb_rct.move_ip(vx, vy)  #爆弾移動
-        screen.blit(bb_img, bb_rct)  #爆弾表示
+        bb_rct.move_ip(vx, vy)  # 爆弾移動
+        screen.blit(bb_img, bb_rct)  # 爆弾表示
         if kk_rct.colliderect(bb_rct): # こうかとんが爆弾に衝突時の処理
             return 
         
-
         pg.display.update()
         clock.tick(1000)
-
-        
-
 
 if __name__ == "__main__":
     pg.init()
