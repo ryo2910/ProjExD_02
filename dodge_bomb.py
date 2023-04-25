@@ -72,6 +72,8 @@ def main():
 
         bb_rct.move_ip(vx, vy)  #爆弾移動
         screen.blit(bb_img, bb_rct)  #爆弾表示
+        if kk_rct.colliderect(bb_rct): # こうかとんが爆弾に衝突時の処理
+            return 
         
 
         pg.display.update()
