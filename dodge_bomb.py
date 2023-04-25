@@ -11,6 +11,9 @@ delta = {
     }
 
 
+
+
+
 def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
     オブジェクトが画面内or画面外を判定し、真理値タプル(Trueなど)を返す
@@ -43,6 +46,20 @@ def main():
     bb_rct = bb_img.get_rect()
     bb_rct.center = x, y
     tmr = 0
+    kk_img_f = pg.transform.flip(kk_img, True, False)  #こうかとん反転
+    kk_muki = {
+        (0, -1): pg.transform.rotozoom(kk_img_f, 90, 1.0),
+        (1, -1): pg.transform.rotozoom(kk_img_f, 45, 1.0),
+        (1, 0): pg.transform.rotozoom(kk_img_f, 0, 1.0),
+        (1, 1): pg.transform.rotozoom(kk_img_f, -45, 1.0),
+        (0, 1): pg.transform.rotozoom(kk_img_f, -90, 1.0),
+        (-1, 1): pg.transform.rotozoom(kk_img, 45, 1.0),
+        (-1, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
+        (-1, -1): pg.transform.rotozoom(kk_img, -45, 1.0),
+        (0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
+    }
+
+    accs = [a for a in range(1, 11)]
     
 
     while True:
@@ -51,17 +68,25 @@ def main():
                 return 0
 
         tmr += 1
+        kk_lst = []
+        t_x = 0  #リストからとったタプル
+        t_y = 0
 
         key_lst = pg.key.get_pressed()
         for k, mv in delta.items():
             if key_lst[k]:
                 kk_rct.move_ip(mv)
+                kk_lst.append(mv)  #空のリストにmvをいれる
         if check_bound(screen.get_rect(), kk_rct) != (True, True):
             for k, mv in delta.items():
                 if key_lst[k]:
                    kk_rct.move_ip(-mv[0], -mv[1])
 
+        for t in kk_lst:  #追加1
+            t_x += t[0]
+            t_y += t[1]
 
+        kk_img = kk_muki[(t_x, t_y)]
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)  #こうかとん移動
         yoko, tate = check_bound(screen.get_rect(), bb_rct)
@@ -74,6 +99,15 @@ def main():
         screen.blit(bb_img, bb_rct)  #爆弾表示
         if kk_rct.colliderect(bb_rct): # こうかとんが爆弾に衝突時の処理
             return 
+        
+        
+        
+        #for r in range(1, 11):  #追加機能2
+            #bb_img = pg.Surface((20*r, 20*r))
+            #pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+            #bb_imgs.append(bb_img)
+        #avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
+        #bb_img = bb_imgs[min(tmr//1000, 9)]
         
 
         pg.display.update()
