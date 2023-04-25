@@ -59,7 +59,7 @@ def main():
         (0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
     }
 
-    accs = [a for a in range(1, 11)]
+    accs = [a for a in range(1, 11)] #演習2
     
 
     while True:
@@ -71,6 +71,9 @@ def main():
         kk_lst = []
         t_x = 0  #リストからとったタプル
         t_y = 0
+
+        avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
+    
 
         key_lst = pg.key.get_pressed()
         for k, mv in delta.items():
@@ -89,6 +92,7 @@ def main():
         kk_img = kk_muki[(t_x, t_y)]
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)  #こうかとん移動
+        bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(screen.get_rect(), bb_rct)
         if not yoko:  #横方向にはみ出していたら
             vx *= -1
@@ -99,15 +103,6 @@ def main():
         screen.blit(bb_img, bb_rct)  #爆弾表示
         if kk_rct.colliderect(bb_rct): # こうかとんが爆弾に衝突時の処理
             return 
-        
-        
-        
-        #for r in range(1, 11):  #追加機能2
-            #bb_img = pg.Surface((20*r, 20*r))
-            #pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
-            #bb_imgs.append(bb_img)
-        #avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
-        #bb_img = bb_imgs[min(tmr//1000, 9)]
         
 
         pg.display.update()
